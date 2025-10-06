@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import useProductField from '../../ProductHook/useProductHook';
 
-const ProductForm = () => {
+const ProductForm = ({handleAddProduct}) => {
 
     const [name, nameOnChange] = useProductField('')
     const [price, priceOnChange] = useProductField('')
     const [quantity, quantityOnChange] = useProductField('')
+    const [error, setError] = useState('')
 
     const handleProductSubmit = (e) => { 
         e.preventDefault();
@@ -14,7 +16,37 @@ const ProductForm = () => {
             quantity,
         }
 
-        console.log(productData);
+        if (name.length === 0) { 
+            setError('Please provide a product name')
+            return;
+        }
+
+        else if (price.length === 0) {
+            setError('Please provide a price')
+            return;
+        }
+
+        else if (price < 0) {
+            setError('Price can not be negative')
+            return;
+        }
+
+        else if (quantity.length === 0) { 
+            setError('Minimum quantity is 1')
+            return;
+        }
+
+        else if (quantity < 0) {
+            setError('Quantity can not be negative')
+            return;
+        }
+
+        else {
+            setError('')
+        }
+
+        handleAddProduct(productData);
+        
         
        
     }
@@ -30,6 +62,9 @@ const ProductForm = () => {
                 <br />
                 <input type="submit" value="Submit" style={{marginTop: '10px'}}/>
             </form>
+            <p style={{color: 'red'}}>
+                <small>{error}</small>
+            </p>
         </div>
     );
 };
